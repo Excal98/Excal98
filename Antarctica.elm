@@ -18,10 +18,10 @@ landscape = group [
     |> move (-56, 21.5)
   ,snowcap
     |> filled snow
-    |> move (39, 29.5)
+    |> move (39, 30.5)
     |> scale 1.15
     |> mirrorX
-    |> rotate (degrees 12)
+    |> rotate (degrees 5)
   ,dunes 
     |> filled snow
     |> move (-34, -62)
