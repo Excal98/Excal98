@@ -127,8 +127,8 @@ levelView level t chances timeremaining = case level of
                                             , group (displayChances chances)
                                                 |> move (200,150)
                                             , text (toString timeremaining)
--                                               |> filled black
--                                               |> move (0,200)
+                                                |> filled black
+                                                |> move (0,200)
                                            ]
 
 displayChances chances = case chances of
@@ -380,10 +380,10 @@ heart c = group [circle 50
 update msg model = case msg of
                         Tick t _ -> { model | state = if model.state == InGame && model.levels == []
                                                             then EndOfGame else if model.timeremaining <= 0 then
--                                                           Failure
+                                                            Failure
                                                             else model.state
                                     ,         time = model.time + 1
--                                   ,         timeremaining =  if model.state == InGame then model.timeremaining - 0.05 else model.timeremaining}
+                                    ,         timeremaining =  if model.state == InGame then model.timeremaining - 0.05 else model.timeremaining}
                         StartGame -> { model | state = InGame}
                         SubmitAnswer ans1 ans2 -> if ans1 == ans2
                                                     then nextLevel model
