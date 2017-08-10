@@ -34,7 +34,7 @@ init = { state = MainMenu
          -- Below are a set of variables that aren't used in the template but
          -- maybe you can figure out how to use them? You can add more too!
        , score = 0
-       , timelimit = 0
+       , timeremaining = 20
        , highscore = 0
        , current = 0
        }
@@ -43,7 +43,7 @@ init = { state = MainMenu
 
 view model = case model.state of
                 MainMenu -> collage 1000 500 (menuView model)
-                InGame   -> collage 1000 500 (levelView (List.head model.levels) model.time model.chances)
+                InGame   -> collage 1000 500 (levelView (List.head model.levels) model.time model.chances model.timeremaining)
                 EndOfGame   -> collage 1000 500 (endView model)
                 Failure  -> collage 1000 500 (failView model)
 
@@ -77,7 +77,7 @@ failView model = [ group [ circle 100
                          ] |> notifyMouseDown Reset
                  ]
 
-levelView level t chances = case level of
+levelView level t chances timeremaining = case level of
                                  Nothing -> []
                                  Just lev ->  [ group (lev.image t)
                                             , option A lev.optionA
@@ -97,6 +97,9 @@ levelView level t chances = case level of
                                                 |> move (200,100)
                                             , group (displayChances chances)
                                                 |> move (200,150)
+                                            , text (toString timeremaining)
+                                                |> filled black
+                                                |> move (0,200)
                                            ]
 
 displayChances chances = case chances of
@@ -347,16 +350,18 @@ heart c = group [circle 50
 
 update msg model = case msg of
                         Tick t _ -> { model | state = if model.state == InGame && model.levels == []
-                                                            then EndOfGame
+                                                            then EndOfGame else if model.timeremaining <= 0 then
+                                                            Failure
                                                             else model.state
-                                    ,         time = model.time + 1}
+                                    ,         time = model.time + 1
+                                    ,         timeremaining =  if model.state == InGame then model.timeremaining - 0.05 else model.timeremaining}
                         StartGame -> { model | state = InGame}
                         SubmitAnswer ans1 ans2 -> if ans1 == ans2
                                                     then nextLevel model
                                                     else wrongAnswer model
                         Reset -> init
 
-nextLevel model = {model | levels = Maybe.withDefault [] (List.tail model.levels) , time = 0}
+nextLevel model = {model | levels = Maybe.withDefault [] (List.tail model.levels) , time = 0, timeremaining = 20}
 
 wrongAnswer model = case model.chances of
                         0 -> {model | state = Failure}
