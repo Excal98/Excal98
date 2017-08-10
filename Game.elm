@@ -1,9 +1,11 @@
 type Msg = Tick Float GetKeyState
          | StartGame
+         | Info
          | SubmitAnswer Answer Answer
          | Reset
 
 type GameState = MainMenu
+               | Instructions
                | InGame
                | EndOfGame
                | Failure
@@ -43,6 +45,7 @@ init = { state = MainMenu
 
 view model = case model.state of
                 MainMenu -> collage 1000 500 (menuView model)
+                Instructions -> collage 1000 500 (instructionsView model)
                 InGame   -> collage 1000 500 (levelView (List.head model.levels) model.time model.chances model.timeremaining)
                 EndOfGame   -> collage 1000 500 (endView model)
                 Failure  -> collage 1000 500 (failView model)
@@ -55,8 +58,34 @@ menuView model = [ group [ circle 100
                             |> filled white
                             |> move (0,-15)
                          ] |> notifyMouseDown StartGame
+                   , group [ rect 200 75
+                              |> filled blue
+                              |> move(0, -150)
+                             , text "Instructions"
+                              |> size 40
+                              |> centered
+                              |> filled white
+                              |> move(0, -160)
+                           ] |> notifyMouseDown Info
                  ]
 
+instructionsView model = [ group [ rect 200 100
+                                    |> filled green
+                                   , text "Based on the image provided, select \n the corresponding superhero. \n Faster guesses give more score"
+                                    |> size 12
+                                    |> centered
+                                    |> filled white
+                                  ]
+                           , group [ circle 50
+                                      |> filled blue
+                                      |> move (0, -150)
+                                    , text "Back"
+                                      |> size 40
+                                      |> centered
+                                      |> filled white
+                                      |> move(0, -160)
+                                   ] |> notifyMouseDown Reset
+                         ]
 endView model = [ group [ circle 100
                             |> filled yellow
                          , text "RESET"
@@ -98,8 +127,8 @@ levelView level t chances timeremaining = case level of
                                             , group (displayChances chances)
                                                 |> move (200,150)
                                             , text (toString timeremaining)
-                                                |> filled black
-                                                |> move (0,200)
+-                                               |> filled black
+-                                               |> move (0,200)
                                            ]
 
 displayChances chances = case chances of
@@ -351,15 +380,16 @@ heart c = group [circle 50
 update msg model = case msg of
                         Tick t _ -> { model | state = if model.state == InGame && model.levels == []
                                                             then EndOfGame else if model.timeremaining <= 0 then
-                                                            Failure
+-                                                           Failure
                                                             else model.state
                                     ,         time = model.time + 1
-                                    ,         timeremaining =  if model.state == InGame then model.timeremaining - 0.05 else model.timeremaining}
+-                                   ,         timeremaining =  if model.state == InGame then model.timeremaining - 0.05 else model.timeremaining}
                         StartGame -> { model | state = InGame}
                         SubmitAnswer ans1 ans2 -> if ans1 == ans2
                                                     then nextLevel model
                                                     else wrongAnswer model
                         Reset -> init
+                        Info -> { model | state = Instructions}
 
 nextLevel model = {model | levels = Maybe.withDefault [] (List.tail model.levels) , time = 0, timeremaining = 20}
 
