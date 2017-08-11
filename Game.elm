@@ -46,7 +46,7 @@ init = { state = MainMenu
 view model = case model.state of
                 MainMenu -> collage 1000 500 (menuView model)
                 Instructions -> collage 1000 500 (instructionsView model)
-                InGame   -> collage 1000 500 (levelView (List.head model.levels) model.time model.chances model.timeremaining)
+                InGame   -> collage 1000 500 (levelView (List.head model.levels) model.time model.chances model.timeremaining model.score)
                 EndOfGame   -> collage 1000 500 (endView model)
                 Failure  -> collage 1000 500 (failView model)
 
@@ -106,7 +106,7 @@ failView model = [ group [ circle 100
                          ] |> notifyMouseDown Reset
                  ]
 
-levelView level t chances timeremaining = case level of
+levelView level t chances timeremaining score = case level of
                                  Nothing -> []
                                  Just lev ->  [ group (lev.image t)
                                             , option A lev.optionA
@@ -127,8 +127,13 @@ levelView level t chances timeremaining = case level of
                                             , group (displayChances chances)
                                                 |> move (200,150)
                                             , text (toString timeremaining)
+                                                |> size 20
                                                 |> filled black
                                                 |> move (0,200)
+                                                ,text(toString score)
+                                                |> size 20
+                                                |>filled black
+                                                |>move (-200,0)
                                            ]
 
 displayChances chances = case chances of
@@ -382,8 +387,9 @@ update msg model = case msg of
                                                             then EndOfGame else if model.timeremaining <= 0 then
                                                             Failure
                                                             else model.state
+  
                                     ,         time = model.time + 1
-                                    ,         timeremaining =  if model.state == InGame then model.timeremaining - 0.05 else model.timeremaining}
+                                    ,         timeremaining =  if model.state == InGame then model.timeremaining - 0.100 else model.timeremaining}
                         StartGame -> { model | state = InGame}
                         SubmitAnswer ans1 ans2 -> if ans1 == ans2
                                                     then nextLevel model
@@ -391,7 +397,7 @@ update msg model = case msg of
                         Reset -> init
                         Info -> { model | state = Instructions}
 
-nextLevel model = {model | levels = Maybe.withDefault [] (List.tail model.levels) , time = 0, timeremaining = 20}
+nextLevel model = {model | levels = Maybe.withDefault [] (List.tail model.levels) , time = 0, score = model.score +100, timeremaining = 20}
 
 wrongAnswer model = case model.chances of
                         0 -> {model | state = Failure}
