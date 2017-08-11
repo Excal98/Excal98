@@ -80,7 +80,7 @@ instructionsView model = [ group [ rect 250 100
                                     |> size 16
                                     |> centered
                                     |> filled white
-                                   , text "Faster guesses give more score"
+                                   , text "You have 3 lives."
                                     |> size 16
                                     |> centered
                                     |> filled white
@@ -132,15 +132,16 @@ levelView level t chances timeremaining score = case level of
                                                 |> move (150,-160)
                                                 |> notifyMouseDown (SubmitAnswer D lev.answer)
                                             , text "Extra chances"
+                                                |> size 20
                                                 |> filled red
-                                                |> move (200,100)
+                                                |> move (230,80)
                                             , group (displayChances chances)
                                                 |> move (200,150)
                                             , text (toString timeremaining)
                                                 |> size 20
                                                 |> filled black
                                                 |> move (0,200)
-                                                ,text(toString score)
+                                            , text(toString score)
                                                 |> size 20
                                                 |>filled black
                                                 |>move (-200,0)
@@ -399,7 +400,7 @@ update msg model = case msg of
                                                             else model.state
   
                                     ,         time = model.time + 1
-                                    ,         timeremaining =  if model.state == InGame then model.timeremaining - 0.100 else model.timeremaining}
+                                    ,         timeremaining =  if model.state == InGame then model.timeremaining - 0.05 else model.timeremaining}
                         StartGame -> { model | state = InGame}
                         SubmitAnswer ans1 ans2 -> if ans1 == ans2
                                                     then nextLevel model
