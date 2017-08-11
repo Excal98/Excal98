@@ -71,10 +71,20 @@ menuView model = [ group [ circle 100
 
 instructionsView model = [ group [ rect 200 100
                                     |> filled green
-                                   , text "Based on the image provided, select \n the corresponding superhero. \n Faster guesses give more score"
-                                    |> size 12
+                                   , text "Based on the image provided, select"
+                                    |> size 16
                                     |> centered
                                     |> filled white
+                                    |> move (0, 20)
+                                   , text "the corresponding superhero."
+                                    |> size 16
+                                    |> centered
+                                    |> filled white
+                                   , text "Faster guesses give more score"
+                                    |> size 16
+                                    |> centered
+                                    |> filled white
+                                    |> move (0, -20)
                                   ]
                            , group [ circle 50
                                       |> filled blue
