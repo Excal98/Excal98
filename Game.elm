@@ -69,7 +69,7 @@ menuView model = [ group [ circle 100
                            ] |> notifyMouseDown Info
                  ]
 
-instructionsView model = [ group [ rect 200 100
+instructionsView model = [ group [ rect 250 100
                                     |> filled green
                                    , text "Based on the image provided, select"
                                     |> size 16
