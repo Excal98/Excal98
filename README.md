@@ -1,9 +1,6 @@
 ## Hello World!
 
 
-It's lit my dudes
-![Yeet](http://i0.kym-cdn.com/entries/icons/original/000/020/016/wednesday.jpg)
-
 
 You can use the [editor on GitHub](https://github.com/Excal98/Leap/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
